@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Code - moderncode.ai</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(45deg, #FF4E50, #F9D423, #F6416C, #9B59B6, #00CDAC, #1CE6FF);
+            background-size: 1000% 1000%;
+            animation: gradient 60s ease infinite;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes neonGlow {
+            0%, 100% { box-shadow: 0 0 2px #1CE6FF, 0 0 4px #1CE6FF, 0 0 6px #1CE6FF, 0 0 8px #1CE6FF; }
+            50% { box-shadow: 0 0 1px #1CE6FF, 0 0 2px #1CE6FF, 0 0 3px #1CE6FF, 0 0 4px #1CE6FF; }
+        }
+
+        .glowing-border {
+            border: 2px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 4px #1CE6FF, 0 0 8px #1CE6FF;
+            transition: box-shadow 0.3s ease-in-out;
+            animation: neonGlow 4.5s ease-in-out infinite alternate;
+        }
+
+        .glowing-border:focus {
+            outline: none;
+            box-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px #1CE6FF;
+        }
+
+        .modern-button {
+            background-color: #fff;
+            border: none;
+            color: #1CE6FF;
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-top: 30px;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease-in-out;
+        }
+
+        .modern-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 5px 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .modern-button:hover .arrow {
+            transform: scale(1.2);
+        }
+
+        .arrow {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .glass-text {
+            background: rgba(255, 255, 255, 0.1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0px 1px 1px #fff, 0px -1px 1px #666;
+            font-weight: bold;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 40px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div class="text-center p-5">
+        <h1 class="text-6xl font-bold mb-8 glass-text" style="font-family: 'Poppins', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Modern Code</h1>
+        <div class="glass-effect">
+            <div class="mt-5 animate-fadeIn">
+                <p class="text-white text-base mb-4 uppercase tracking-widest" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Join the mailing list</p>
+                <input type="email" id="email" placeholder="Enter your email" class="mt-2 p-3 rounded text-gray-700 glowing-border w-64 mb-8">
+                <button onclick="submitEmail()" class="modern-button">
+                    <svg class="arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function submitEmail() {
+            const email = document.getElementById('email').value;
+            const url = 'APP_URL';
+            const data = {
+                email: email
+            };
+
+            fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                const confirmationMessage = document.createElement('div');
+                confirmationMessage.textContent = "Welcome to the mailing list";
+                confirmationMessage.className = "text-white text-base mt-4";
+                document.body.appendChild(confirmationMessage);
+
+                setTimeout(() => confirmationMessage.remove(), 3000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
