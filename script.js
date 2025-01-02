@@ -1,4 +1,4 @@
-// Content data - Stores all the text content for each section
+// Content data
 const contentData = {
   home: {
     title: 'About Us',
@@ -36,30 +36,40 @@ We value your feedback and will do our best to respond to your inquiries in a ti
   },
 };
 
-// Typing animation function - Creates a typewriter effect
+// Track if animation is in progress
+let isAnimating = false;
+
+// Typing animation function
 function typeText(element, text, speed = 10) {
-  let i = 0;
-  element.innerHTML = '';
-  element.style.visibility = 'visible';
+  return new Promise((resolve) => {
+    let i = 0;
+    element.innerHTML = '';
+    element.style.visibility = 'visible';
 
-  function type() {
-    if (i < text.length) {
-      // Handle special characters and line breaks
-      if (text.charAt(i) === '\n') {
-        element.innerHTML += '<br>';
+    function type() {
+      if (i < text.length) {
+        // Handle special characters and line breaks
+        if (text.charAt(i) === '\n') {
+          element.innerHTML += '<br>';
+        } else {
+          element.innerHTML += text.charAt(i);
+        }
+        i++;
+        setTimeout(type, speed);
       } else {
-        element.innerHTML += text.charAt(i);
+        resolve();
       }
-      i++;
-      setTimeout(type, speed);
     }
-  }
 
-  type();
+    type();
+  });
 }
 
-// Content switching function - Handles page transitions
-function showContent(section) {
+// Content switching function
+async function showContent(section) {
+  // If animation is in progress, ignore the click
+  if (isAnimating) return;
+
   const contentMap = {
     home: 'homeContent',
     privacy: 'privacyContent',
@@ -69,7 +79,7 @@ function showContent(section) {
   const currentContent = document.querySelector('.terminal-content.active');
   const newContent = document.getElementById(contentMap[section]);
 
-  // If clicking the same section, do nothing
+  // If clicking the current section, ignore the click
   if (currentContent === newContent) {
     return;
   }
@@ -85,26 +95,29 @@ function showContent(section) {
     }
   });
 
+  isAnimating = true;
   currentContent.style.opacity = '0';
 
-  setTimeout(() => {
-    currentContent.classList.remove('active');
-    newContent.classList.add('active');
-    newContent.style.opacity = '1';
+  await new Promise((resolve) => setTimeout(resolve, 300));
 
-    const textElement = newContent.querySelector('.terminal-text');
-    const originalText = contentData[section].text;
-    typeText(textElement, originalText);
-  }, 300);
+  currentContent.classList.remove('active');
+  newContent.classList.add('active');
+  newContent.style.opacity = '1';
+
+  const textElement = newContent.querySelector('.terminal-text');
+  const originalText = contentData[section].text;
+
+  // Wait for typing animation to complete
+  await typeText(textElement, originalText);
+  isAnimating = false;
 }
 
-// Initialize terminal when the page loads
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize terminal
+document.addEventListener('DOMContentLoaded', async () => {
   // Initialize all content sections
   Object.entries(contentData).forEach(([key, data]) => {
     const section = document.getElementById(`${key}Content`);
     const title = section.querySelector('.terminal-title');
-    // Set title with blinking cursor
     title.innerHTML = `> ${data.title}_<span class="cursor"></span>`;
   });
 
@@ -125,14 +138,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialText = document.querySelector(
     '.terminal-content.active .terminal-text'
   );
-  typeText(initialText, contentData.home.text);
+  await typeText(initialText, contentData.home.text);
+  isAnimating = false;
 });
 
-// Grid animation setup - Creates the background grid effect
+// Grid animation setup
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 
-// Handle canvas resizing
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -141,19 +154,16 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-// Grid animation parameters
 let gridSize = 40;
 const speed = 1;
 let offset = 0;
 
-// Helper functions for grid calculations
 const horizon = () => canvas.height * 0.4;
 const perspective = () => canvas.height * 1.5;
 const aspectRatio = () => canvas.width / canvas.height;
 const spreadFactor = () => 3.2 * aspectRatio();
 const numLines = () => Math.ceil((canvas.width / gridSize) * 2.5);
 
-// Calculate opacity for grid lines
 function getVerticalLineOpacity(x, centerX) {
   const distance = Math.abs(x - centerX);
   const maxDistance = canvas.width / 2;
@@ -167,7 +177,6 @@ function getHorizontalLineOpacity(y, horizonY) {
   return Math.max(0.2, Math.min(1, Math.pow(normalizedDistance, 1.5)));
 }
 
-// Draw vignette effects (darkening around edges)
 function drawVignettes() {
   const maxDimension = Math.max(canvas.width, canvas.height);
   const gradient = ctx.createRadialGradient(
@@ -228,7 +237,6 @@ function drawVignettes() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// Main grid drawing function
 function drawGrid() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -291,5 +299,4 @@ function drawGrid() {
   requestAnimationFrame(drawGrid);
 }
 
-// Start the grid animation
 drawGrid();
