@@ -1,12 +1,14 @@
-// Content data
-const contentData = {
+// Page configuration and content
+const pages = {
   home: {
+    id: 'homeContent',
     title: 'About Us',
     text: `Modern Code develops innovative and user-friendly apps for the App Store.
 
 We are dedicated to creating high-quality applications that enhance the mobile experience for our users.`,
   },
   privacy: {
+    id: 'privacyContent',
     title: 'PRIVACY POLICY',
     text: `The developer of this app respects your privacy with a strict zero data collection policy.
 
@@ -27,6 +29,7 @@ Simply put, you can use the app with 100% privacy.
 jake@moderncode.ai`,
   },
   contact: {
+    id: 'contactContent',
     title: 'Contact Us',
     text: `If you have any questions, comments, or concerns, please feel free to reach out to us:
 
@@ -36,8 +39,9 @@ We value your feedback and will do our best to respond to your inquiries in a ti
   },
 };
 
-// Track if animation is in progress
+// Track animation state
 let isAnimating = false;
+let currentPage = '';
 
 // Typing animation function
 function typeText(element, text, speed = 10) {
@@ -48,7 +52,6 @@ function typeText(element, text, speed = 10) {
 
     function type() {
       if (i < text.length) {
-        // Handle special characters and line breaks
         if (text.charAt(i) === '\n') {
           element.innerHTML += '<br>';
         } else {
@@ -66,27 +69,20 @@ function typeText(element, text, speed = 10) {
 }
 
 // Content switching function
-async function showContent(section) {
-  // If animation is in progress, ignore the click
-  if (isAnimating) return;
-
-  const contentMap = {
-    home: 'homeContent',
-    privacy: 'privacyContent',
-    contact: 'contactContent',
-  };
-
-  const currentContent = document.querySelector('.terminal-content.active');
-  const newContent = document.getElementById(contentMap[section]);
-
-  // If clicking the current section, ignore the click
-  if (currentContent === newContent) {
+async function showContent(pageName) {
+  // Don't switch if we're on the current page or animating
+  if (pageName === currentPage || isAnimating) {
     return;
   }
 
-  // Update menu styles to reflect current page
+  isAnimating = true;
+  const currentContent = document.getElementById(pages[currentPage].id);
+  const newContent = document.getElementById(pages[pageName].id);
+
+  // Update menu styles
   document.querySelectorAll('.menu a').forEach((link) => {
-    if (link.getAttribute('data-section') === section) {
+    const linkPage = link.getAttribute('data-page');
+    if (linkPage === pageName) {
       link.classList.add('active');
       link.style.pointerEvents = 'none';
     } else {
@@ -95,37 +91,47 @@ async function showContent(section) {
     }
   });
 
-  isAnimating = true;
+  // Fade out current content
   currentContent.style.opacity = '0';
 
   await new Promise((resolve) => setTimeout(resolve, 300));
 
+  // Switch content
   currentContent.classList.remove('active');
   newContent.classList.add('active');
   newContent.style.opacity = '1';
 
-  const textElement = newContent.querySelector('.terminal-text');
-  const originalText = contentData[section].text;
+  // Update current page
+  currentPage = pageName;
 
-  // Wait for typing animation to complete
+  // Start typing animation
+  const textElement = newContent.querySelector('.terminal-text');
+  const originalText = pages[pageName].text;
+
   await typeText(textElement, originalText);
   isAnimating = false;
 }
 
 // Initialize terminal
 document.addEventListener('DOMContentLoaded', async () => {
+  // Find active page by checking active content
+  const activeContent = document.querySelector('.terminal-content.active');
+  currentPage = Object.keys(pages).find(
+    (page) => pages[page].id === activeContent.id
+  );
+
   // Initialize all content sections
-  Object.entries(contentData).forEach(([key, data]) => {
-    const section = document.getElementById(`${key}Content`);
+  Object.entries(pages).forEach(([pageName, pageData]) => {
+    const section = document.getElementById(pageData.id);
     const title = section.querySelector('.terminal-title');
-    title.innerHTML = `> ${data.title}_<span class="cursor"></span>`;
+    title.innerHTML = `> ${pageData.title}_<span class="cursor"></span>`;
   });
 
-  // Set initial active state for menu items
+  // Set up menu items
   document.querySelectorAll('.menu a').forEach((link) => {
-    const section = link.getAttribute('onclick').match(/'([^']+)'/)[1];
-    link.setAttribute('data-section', section);
-    if (section === 'home') {
+    const pageName = link.getAttribute('onclick').match(/'([^']+)'/)[1];
+    link.setAttribute('data-page', pageName);
+    if (pageName === currentPage) {
       link.classList.add('active');
       link.style.pointerEvents = 'none';
     }
@@ -134,11 +140,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const terminal = document.querySelector('.glass-effect');
   terminal.classList.add('expanded');
 
-  // Start initial typing animation for home content
+  // Start initial typing animation
   const initialText = document.querySelector(
     '.terminal-content.active .terminal-text'
   );
-  await typeText(initialText, contentData.home.text);
+  await typeText(initialText, pages[currentPage].text);
   isAnimating = false;
 });
 
