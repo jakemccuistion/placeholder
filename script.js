@@ -9,7 +9,7 @@ We are dedicated to creating high-quality applications that enhance the mobile e
   },
   privacy: {
     id: 'privacyContent',
-    title: 'PRIVACY POLICY',
+    title: 'Privacy Policy',
     text: `The developer of this app respects your privacy with a strict zero data collection policy.
 
 This app does not:
@@ -25,7 +25,7 @@ This app does not:
 
 Simply put, you can use the app with 100% privacy.
 
-> Contact Developer_
+> Contact Developer
 jake@moderncode.ai`,
   },
   contact: {
@@ -43,20 +43,24 @@ We value your feedback and will do our best to respond to your inquiries in a ti
 let isAnimating = false;
 let currentPage = '';
 
-// Typing animation function
+// Typing animation function with moving cursor
 function typeText(element, text, speed = 10) {
   return new Promise((resolve) => {
     let i = 0;
     element.innerHTML = '';
     element.style.visibility = 'visible';
+    const cursor = document.createElement('span');
+    cursor.className = 'cursor';
 
     function type() {
       if (i < text.length) {
         if (text.charAt(i) === '\n') {
-          element.innerHTML += '<br>';
+          element.appendChild(document.createElement('br'));
         } else {
-          element.innerHTML += text.charAt(i);
+          const char = document.createTextNode(text.charAt(i));
+          element.appendChild(char);
         }
+        element.appendChild(cursor);
         i++;
         setTimeout(type, speed);
       } else {
@@ -124,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   Object.entries(pages).forEach(([pageName, pageData]) => {
     const section = document.getElementById(pageData.id);
     const title = section.querySelector('.terminal-title');
-    title.innerHTML = `> ${pageData.title}_<span class="cursor"></span>`;
+    title.innerHTML = `> ${pageData.title}<span class="cursor"></span>`;
   });
 
   // Set up menu items
@@ -201,38 +205,6 @@ function drawVignettes() {
 
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  const horizonY = horizon();
-  ctx.save();
-
-  ctx.beginPath();
-  ctx.ellipse(
-    canvas.width / 2, // x
-    horizonY, // y
-    canvas.width * 1.2, // radiusX
-    canvas.height * 0.35, // radiusY
-    0, // rotation
-    0, // startAngle
-    Math.PI * 2 // endAngle
-  );
-
-  const ovalGradient = ctx.createRadialGradient(
-    canvas.width / 2,
-    horizonY,
-    0,
-    canvas.width / 2,
-    horizonY,
-    canvas.width * 0.8
-  );
-  ovalGradient.addColorStop(0, 'rgba(0,0,0,0)');
-  ovalGradient.addColorStop(0.2, 'rgba(0,0,0,0.1)');
-  ovalGradient.addColorStop(0.4, 'rgba(0,0,0,0.4)');
-  ovalGradient.addColorStop(0.7, 'rgba(0,0,0,0.7)');
-  ovalGradient.addColorStop(1, 'rgba(0,0,0,0.9)');
-
-  ctx.fillStyle = ovalGradient;
-  ctx.fill();
-  ctx.restore();
 
   const topGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
   topGradient.addColorStop(0, 'rgba(0,0,0,1)');
