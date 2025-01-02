@@ -101,7 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
   Object.entries(contentData).forEach(([key, data]) => {
     const section = document.getElementById(`${key}Content`);
     const title = section.querySelector('.terminal-title');
-    title.textContent = `> ${data.title}_`;
+    // Preserve the cursor span
+    title.innerHTML = `> ${data.title}_<span class="cursor"></span>`;
   });
 
   const terminal = document.querySelector('.glass-effect');
