@@ -1,46 +1,70 @@
+// Content data
+const contentData = {
+  home: {
+    title: 'About Us',
+    text: `Modern Code develops innovative and user-friendly apps for the App Store.
+
+We are dedicated to creating high-quality applications that enhance the mobile experience for our users.`,
+  },
+  privacy: {
+    title: 'PRIVACY POLICY',
+    text: `The developer of this app respects your privacy with a strict zero data collection policy.
+
+This app does not:
+- transmit any data
+- connect to any server
+- connect to the internet
+- collect any information
+- track you
+- collect any data whatsoever
+- collect personal data
+- collect aggregate data
+- collect anonymous data
+
+Simply put, you can use the app with 100% privacy.
+
+> Contact Developer_
+jake@moderncode.ai`,
+  },
+  contact: {
+    title: 'Contact Us',
+    text: `If you have any questions, comments, or concerns, please feel free to reach out to us:
+
+> Email: jake@moderncode.ai
+
+We value your feedback and will do our best to respond to your inquiries in a timely manner.`,
+  },
+};
+
 // Typing animation function
 function typeText(element, text, speed = 10) {
-  // Split text into lines and store as array
-  const lines = text.split('\n');
+  const lines = text.split(/\r?\n/);
   element.innerHTML = '';
   element.classList.add('typing');
+
+  const textContainer = document.createElement('div');
+  element.appendChild(textContainer);
 
   let lineIndex = 0;
   let charIndex = 0;
 
-  // Create a container div for the text
-  const textContainer = document.createElement('div');
-  element.appendChild(textContainer);
-
-  // Current line element
-  let currentLineElement = document.createElement('span');
-  textContainer.appendChild(currentLineElement);
-
   function type() {
     if (lineIndex < lines.length) {
-      // If we're starting a new line
       if (charIndex === 0) {
-        // Create new line element
-        currentLineElement = document.createElement('span');
-        textContainer.appendChild(currentLineElement);
-
-        // Add explicit line break before new line (except for first line)
         if (lineIndex > 0) {
-          textContainer.insertBefore(
-            document.createElement('br'),
-            currentLineElement
-          );
+          textContainer.appendChild(document.createElement('br'));
         }
       }
 
-      if (charIndex < lines[lineIndex].length) {
-        // Add character to current line
-        const char = lines[lineIndex][charIndex];
-        currentLineElement.textContent += char;
+      const currentLine = lines[lineIndex];
+
+      if (charIndex < currentLine.length) {
+        textContainer.appendChild(
+          document.createTextNode(currentLine[charIndex])
+        );
         charIndex++;
         setTimeout(type, speed);
       } else {
-        // Move to next line
         lineIndex++;
         charIndex = 0;
         setTimeout(type, speed);
@@ -59,15 +83,12 @@ function showContent(section) {
     contact: 'contactContent',
   };
 
-  // Get current and new content elements
   const currentContent = document.querySelector('.terminal-content.active');
   const newContent = document.getElementById(contentMap[section]);
 
   if (currentContent === newContent) {
-    // If clicking the same section, reset the typing animation
     const textElement = newContent.querySelector('.terminal-text');
-    // Use innerText instead of textContent to preserve line breaks
-    const originalText = textElement.innerText.trim();
+    const originalText = contentData[section].text;
     textElement.style.opacity = '0';
 
     setTimeout(() => {
@@ -78,35 +99,36 @@ function showContent(section) {
     return;
   }
 
-  // Fade out current content
   currentContent.style.opacity = '0';
 
-  // After fade out, switch content and start typing
   setTimeout(() => {
     currentContent.classList.remove('active');
     newContent.classList.add('active');
     newContent.style.opacity = '1';
 
-    // Get text content and start typing animation
     const textElement = newContent.querySelector('.terminal-text');
-    // Use innerText instead of textContent to preserve line breaks
-    const originalText = textElement.innerText.trim();
+    const originalText = contentData[section].text;
     typeText(textElement, originalText);
   }, 300);
 }
 
 // Initialize terminal
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize all content sections
+  Object.entries(contentData).forEach(([key, data]) => {
+    const section = document.getElementById(`${key}Content`);
+    const title = section.querySelector('.terminal-title');
+    title.textContent = `> ${data.title}_`;
+  });
+
   const terminal = document.querySelector('.glass-effect');
   terminal.classList.add('expanded');
 
-  // Start initial typing animation
+  // Start initial typing animation for home content
   const initialText = document.querySelector(
     '.terminal-content.active .terminal-text'
   );
-  // Use innerText instead of textContent to preserve line breaks
-  const originalText = initialText.innerText;
-  typeText(initialText, originalText);
+  typeText(initialText, contentData.home.text);
 });
 
 // Grid animation setup
@@ -172,6 +194,7 @@ function drawVignettes() {
     horizonY,
     canvas.width * 1.2,
     canvas.height * 0.35,
+    0,
     0,
     Math.PI * 2
   );
