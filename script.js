@@ -180,8 +180,8 @@ let offset = 0;
 const horizon = () => canvas.height * 0.4;
 const perspective = () => canvas.height * 1.5;
 const aspectRatio = () => canvas.width / canvas.height;
-const spreadFactor = () => 3.2 * aspectRatio();
-const numLines = () => Math.ceil((canvas.width / gridSize) * 2.5);
+const spreadFactor = () => 2.0 * aspectRatio(); // Changed from 3.2 to 2.0
+const numLines = () => Math.ceil((canvas.width / gridSize) * 2); // Adjusted multiplier
 
 function getVerticalLineOpacity(x, centerX) {
   const distance = Math.abs(x - centerX);
@@ -242,7 +242,7 @@ function drawGrid() {
     let startX = canvas.width / 2 + x * spacing * currentSpreadFactor;
     let startY = canvas.height * 1.5;
 
-    let endX = canvas.width / 2 + x * (spacing / 6);
+    let endX = canvas.width / 2 + x * (spacing / 3); // Changed from /6 to /3
     let endY = currentHorizon;
 
     startX =
