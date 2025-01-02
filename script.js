@@ -1,4 +1,4 @@
-// Content data
+// Content data - Stores all the text content for each section
 const contentData = {
   home: {
     title: 'About Us',
@@ -36,7 +36,7 @@ We value your feedback and will do our best to respond to your inquiries in a ti
   },
 };
 
-// Typing animation function
+// Typing animation function - Creates a typewriter effect
 function typeText(element, text, speed = 10) {
   let i = 0;
   element.innerHTML = '';
@@ -58,7 +58,7 @@ function typeText(element, text, speed = 10) {
   type();
 }
 
-// Content switching function
+// Content switching function - Handles page transitions
 function showContent(section) {
   const contentMap = {
     home: 'homeContent',
@@ -69,18 +69,21 @@ function showContent(section) {
   const currentContent = document.querySelector('.terminal-content.active');
   const newContent = document.getElementById(contentMap[section]);
 
+  // If clicking the same section, do nothing
   if (currentContent === newContent) {
-    const textElement = newContent.querySelector('.terminal-text');
-    const originalText = contentData[section].text;
-    textElement.style.opacity = '0';
-
-    setTimeout(() => {
-      textElement.style.opacity = '1';
-      typeText(textElement, originalText);
-    }, 300);
-
     return;
   }
+
+  // Update menu styles to reflect current page
+  document.querySelectorAll('.menu a').forEach((link) => {
+    if (link.getAttribute('data-section') === section) {
+      link.classList.add('active');
+      link.style.pointerEvents = 'none';
+    } else {
+      link.classList.remove('active');
+      link.style.pointerEvents = 'auto';
+    }
+  });
 
   currentContent.style.opacity = '0';
 
@@ -95,14 +98,24 @@ function showContent(section) {
   }, 300);
 }
 
-// Initialize terminal
+// Initialize terminal when the page loads
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize all content sections
   Object.entries(contentData).forEach(([key, data]) => {
     const section = document.getElementById(`${key}Content`);
     const title = section.querySelector('.terminal-title');
-    // Preserve the cursor span
+    // Set title with blinking cursor
     title.innerHTML = `> ${data.title}_<span class="cursor"></span>`;
+  });
+
+  // Set initial active state for menu items
+  document.querySelectorAll('.menu a').forEach((link) => {
+    const section = link.getAttribute('onclick').match(/'([^']+)'/)[1];
+    link.setAttribute('data-section', section);
+    if (section === 'home') {
+      link.classList.add('active');
+      link.style.pointerEvents = 'none';
+    }
   });
 
   const terminal = document.querySelector('.glass-effect');
@@ -115,10 +128,11 @@ document.addEventListener('DOMContentLoaded', () => {
   typeText(initialText, contentData.home.text);
 });
 
-// Grid animation setup
+// Grid animation setup - Creates the background grid effect
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 
+// Handle canvas resizing
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -127,16 +141,19 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
+// Grid animation parameters
 let gridSize = 40;
 const speed = 1;
 let offset = 0;
 
+// Helper functions for grid calculations
 const horizon = () => canvas.height * 0.4;
 const perspective = () => canvas.height * 1.5;
 const aspectRatio = () => canvas.width / canvas.height;
 const spreadFactor = () => 3.2 * aspectRatio();
 const numLines = () => Math.ceil((canvas.width / gridSize) * 2.5);
 
+// Calculate opacity for grid lines
 function getVerticalLineOpacity(x, centerX) {
   const distance = Math.abs(x - centerX);
   const maxDistance = canvas.width / 2;
@@ -150,6 +167,7 @@ function getHorizontalLineOpacity(y, horizonY) {
   return Math.max(0.2, Math.min(1, Math.pow(normalizedDistance, 1.5)));
 }
 
+// Draw vignette effects (darkening around edges)
 function drawVignettes() {
   const maxDimension = Math.max(canvas.width, canvas.height);
   const gradient = ctx.createRadialGradient(
@@ -210,6 +228,7 @@ function drawVignettes() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+// Main grid drawing function
 function drawGrid() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -272,4 +291,5 @@ function drawGrid() {
   requestAnimationFrame(drawGrid);
 }
 
+// Start the grid animation
 drawGrid();

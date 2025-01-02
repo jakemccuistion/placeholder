@@ -1,4 +1,4 @@
-/* Base styles */
+/* Base styles for the page */
 body {
     margin: 0;
     overflow: hidden;
@@ -7,6 +7,7 @@ body {
     background: black;
 }
 
+/* Canvas styles */
 canvas {
     display: block;
     width: 100vw;
@@ -186,4 +187,9 @@ canvas {
 
 .menu a:hover {
     color: rgba(180, 190, 220, 1);
+}
+
+.menu a.active {
+    color: rgba(180, 190, 220, 0.4);
+    cursor: default;
 }
