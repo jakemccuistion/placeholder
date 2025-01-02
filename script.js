@@ -38,37 +38,20 @@ We value your feedback and will do our best to respond to your inquiries in a ti
 
 // Typing animation function
 function typeText(element, text, speed = 10) {
-  const lines = text.split(/\r?\n/);
+  let i = 0;
   element.innerHTML = '';
-  element.classList.add('typing');
-
-  const textContainer = document.createElement('div');
-  element.appendChild(textContainer);
-
-  let lineIndex = 0;
-  let charIndex = 0;
+  element.style.visibility = 'visible';
 
   function type() {
-    if (lineIndex < lines.length) {
-      if (charIndex === 0) {
-        if (lineIndex > 0) {
-          textContainer.appendChild(document.createElement('br'));
-        }
-      }
-
-      const currentLine = lines[lineIndex];
-
-      if (charIndex < currentLine.length) {
-        textContainer.appendChild(
-          document.createTextNode(currentLine[charIndex])
-        );
-        charIndex++;
-        setTimeout(type, speed);
+    if (i < text.length) {
+      // Handle special characters and line breaks
+      if (text.charAt(i) === '\n') {
+        element.innerHTML += '<br>';
       } else {
-        lineIndex++;
-        charIndex = 0;
-        setTimeout(type, speed);
+        element.innerHTML += text.charAt(i);
       }
+      i++;
+      setTimeout(type, speed);
     }
   }
 
@@ -190,13 +173,13 @@ function drawVignettes() {
 
   ctx.beginPath();
   ctx.ellipse(
-    canvas.width / 2,
-    horizonY,
-    canvas.width * 1.2,
-    canvas.height * 0.35,
-    0,
-    0,
-    Math.PI * 2
+    canvas.width / 2, // x
+    horizonY, // y
+    canvas.width * 1.2, // radiusX
+    canvas.height * 0.35, // radiusY
+    0, // rotation
+    0, // startAngle
+    Math.PI * 2 // endAngle
   );
 
   const ovalGradient = ctx.createRadialGradient(
