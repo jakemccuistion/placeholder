@@ -43,23 +43,32 @@ We value your feedback and will do our best to respond to your inquiries in a ti
 let isAnimating = false;
 let currentPage = '';
 
-// Typing animation function with moving cursor
+// Typing animation function
 function typeText(element, text, speed = 10) {
   return new Promise((resolve) => {
     let i = 0;
     element.innerHTML = '';
     element.style.visibility = 'visible';
+
+    // Create cursor element once
     const cursor = document.createElement('span');
     cursor.className = 'cursor';
 
     function type() {
       if (i < text.length) {
+        // Remove cursor before adding new character
+        if (element.contains(cursor)) {
+          element.removeChild(cursor);
+        }
+
         if (text.charAt(i) === '\n') {
           element.appendChild(document.createElement('br'));
         } else {
           const char = document.createTextNode(text.charAt(i));
           element.appendChild(char);
         }
+
+        // Add cursor after current text
         element.appendChild(cursor);
         i++;
         setTimeout(type, speed);
@@ -128,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   Object.entries(pages).forEach(([pageName, pageData]) => {
     const section = document.getElementById(pageData.id);
     const title = section.querySelector('.terminal-title');
-    title.innerHTML = `> ${pageData.title}<span class="cursor"></span>`;
+    title.innerHTML = `> ${pageData.title}`;
   });
 
   // Set up menu items
