@@ -1,112 +1,266 @@
-// script.js
+// Typing animation function
+function typeText(element, text, speed = 10) {
+  // Split text into lines and store as array
+  const lines = text.split('\n');
+  element.innerHTML = '';
+  element.classList.add('typing');
+
+  let lineIndex = 0;
+  let charIndex = 0;
+
+  // Create a container div for the text
+  const textContainer = document.createElement('div');
+  element.appendChild(textContainer);
+
+  // Current line element
+  let currentLineElement = document.createElement('span');
+  textContainer.appendChild(currentLineElement);
+
+  function type() {
+    if (lineIndex < lines.length) {
+      // If we're starting a new line
+      if (charIndex === 0) {
+        // Create new line element
+        currentLineElement = document.createElement('span');
+        textContainer.appendChild(currentLineElement);
+
+        // Add explicit line break before new line (except for first line)
+        if (lineIndex > 0) {
+          textContainer.insertBefore(
+            document.createElement('br'),
+            currentLineElement
+          );
+        }
+      }
+
+      if (charIndex < lines[lineIndex].length) {
+        // Add character to current line
+        const char = lines[lineIndex][charIndex];
+        currentLineElement.textContent += char;
+        charIndex++;
+        setTimeout(type, speed);
+      } else {
+        // Move to next line
+        lineIndex++;
+        charIndex = 0;
+        setTimeout(type, speed);
+      }
+    }
+  }
+
+  type();
+}
+
+// Content switching function
+function showContent(section) {
+  const contentMap = {
+    home: 'homeContent',
+    privacy: 'privacyContent',
+    contact: 'contactContent',
+  };
+
+  // Get current and new content elements
+  const currentContent = document.querySelector('.terminal-content.active');
+  const newContent = document.getElementById(contentMap[section]);
+
+  if (currentContent === newContent) {
+    // If clicking the same section, reset the typing animation
+    const textElement = newContent.querySelector('.terminal-text');
+    const originalText = textElement.textContent.trim();
+    textElement.style.opacity = '0';
+
+    setTimeout(() => {
+      textElement.style.opacity = '1';
+      typeText(textElement, originalText);
+    }, 300);
+
+    return;
+  }
+
+  // Fade out current content
+  currentContent.style.opacity = '0';
+
+  // After fade out, switch content and start typing
+  setTimeout(() => {
+    currentContent.classList.remove('active');
+    newContent.classList.add('active');
+    newContent.style.opacity = '1';
+
+    // Get text content and start typing animation
+    const textElement = newContent.querySelector('.terminal-text');
+    const originalText = textElement.textContent.trim();
+    typeText(textElement, originalText);
+  }, 300);
+}
+
+// Initialize terminal
+document.addEventListener('DOMContentLoaded', () => {
+  const terminal = document.querySelector('.glass-effect');
+  terminal.classList.add('expanded');
+
+  // Start initial typing animation
+  const initialText = document.querySelector(
+    '.terminal-content.active .terminal-text'
+  );
+  const originalText = initialText.textContent;
+  typeText(initialText, originalText);
+});
+
+// Grid animation setup
 const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 
-// Set canvas to full screen
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-resizeCanvas();
 
-// Handle window resize
+resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-// Grid parameters
-const gridSize = 50; // Spacing between grid lines
-const gridCount = 40; // Number of lines in each direction
-const speed = 200; // Pixels per second
-const lines = [];
+let gridSize = 40;
+const speed = 1;
+let offset = 0;
 
-// Initialize grid lines
-for (let i = -gridCount / 2; i <= gridCount / 2; i++) {
-  // Vertical lines (parallel to z-axis)
-  lines.push({
-    type: 'vertical',
-    x: i * gridSize,
-  });
+const horizon = () => canvas.height * 0.4;
+const perspective = () => canvas.height * 1.5;
+const aspectRatio = () => canvas.width / canvas.height;
+const spreadFactor = () => 3.2 * aspectRatio();
+const numLines = () => Math.ceil((canvas.width / gridSize) * 2.5);
 
-  // Horizontal lines (parallel to x-axis)
-  lines.push({
-    type: 'horizontal',
-    y: i * gridSize,
-  });
+function getVerticalLineOpacity(x, centerX) {
+  const distance = Math.abs(x - centerX);
+  const maxDistance = canvas.width / 2;
+  return Math.max(0.15, Math.min(1, 1 - Math.pow(distance / maxDistance, 1.5)));
 }
 
-// Perspective projection function
-function project(x, y, z, fov, viewerDistance) {
-  // Avoid division by zero and negative scaling
-  if (viewerDistance + z === 0) {
-    return { x: 0, y: 0, scale: 0 };
-  }
-  const scale = fov / (viewerDistance + z);
-  return {
-    x: x * scale + canvas.width / 2,
-    y: y * scale + canvas.height / 2,
-    scale,
-  };
+function getHorizontalLineOpacity(y, horizonY) {
+  const distance = y - horizonY;
+  const maxDistance = canvas.height - horizonY;
+  const normalizedDistance = distance / maxDistance;
+  return Math.max(0.2, Math.min(1, Math.pow(normalizedDistance, 1.5)));
 }
 
-let lastTime = null;
-let zOffset = 0; // Starting position of the grid
+function drawVignettes() {
+  const maxDimension = Math.max(canvas.width, canvas.height);
+  const gradient = ctx.createRadialGradient(
+    canvas.width / 2,
+    canvas.height / 2,
+    0,
+    canvas.width / 2,
+    canvas.height / 2,
+    maxDimension * 0.6
+  );
+  gradient.addColorStop(0, 'rgba(0,0,0,0)');
+  gradient.addColorStop(0.4, 'rgba(0,0,0,0.1)');
+  gradient.addColorStop(0.6, 'rgba(0,0,0,0.4)');
+  gradient.addColorStop(0.8, 'rgba(0,0,0,0.8)');
+  gradient.addColorStop(1, 'rgba(0,0,0,0.95)');
 
-function animate(timestamp) {
-  if (!lastTime) lastTime = timestamp;
-  const deltaTime = (timestamp - lastTime) / 1000; // Convert to seconds
-  lastTime = timestamp;
-
-  // Update the current Z position based on speed and elapsed time
-  zOffset += speed * deltaTime;
-  if (zOffset > gridSize * gridCount) {
-    zOffset = 0; // Reset to loop the grid
-  }
-
-  // Clear the canvas
-  ctx.fillStyle = '#000'; // Black background
+  ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Set grid line style
-  ctx.strokeStyle = 'rgba(0, 255, 255, 0.8)'; // Brighter cyan color
-  ctx.lineWidth = 1;
-
-  const fov = 500; // Field of view
-  const viewerDistance = 1000; // Distance from the viewer to the projection plane
+  const horizonY = horizon();
+  ctx.save();
 
   ctx.beginPath();
+  ctx.ellipse(
+    canvas.width / 2,
+    horizonY,
+    canvas.width * 1.2,
+    canvas.height * 0.35,
+    0,
+    0,
+    Math.PI * 2
+  );
 
-  lines.forEach((line) => {
-    if (line.type === 'vertical') {
-      // Vertical lines: x varies, y from -infty to +infty, z increases
-      let x = line.x;
-      for (let z = zOffset; z < zOffset + gridSize * gridCount; z += gridSize) {
-        const p1 = project(x, -canvas.height, z, fov, viewerDistance);
-        const p2 = project(x, canvas.height, z, fov, viewerDistance);
-        if (p1.scale > 0 && p2.scale > 0) {
-          // Ensure lines are in front of the viewer
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        }
-      }
-    } else if (line.type === 'horizontal') {
-      // Horizontal lines: y varies, x from -infty to +infty, z increases
-      let y = line.y;
-      for (let z = zOffset; z < zOffset + gridSize * gridCount; z += gridSize) {
-        const p1 = project(-canvas.width, y, z, fov, viewerDistance);
-        const p2 = project(canvas.width, y, z, fov, viewerDistance);
-        if (p1.scale > 0 && p2.scale > 0) {
-          // Ensure lines are in front of the viewer
-          ctx.moveTo(p1.x, p1.y);
-          ctx.lineTo(p2.x, p2.y);
-        }
-      }
-    }
-  });
+  const ovalGradient = ctx.createRadialGradient(
+    canvas.width / 2,
+    horizonY,
+    0,
+    canvas.width / 2,
+    horizonY,
+    canvas.width * 0.8
+  );
+  ovalGradient.addColorStop(0, 'rgba(0,0,0,0)');
+  ovalGradient.addColorStop(0.2, 'rgba(0,0,0,0.1)');
+  ovalGradient.addColorStop(0.4, 'rgba(0,0,0,0.4)');
+  ovalGradient.addColorStop(0.7, 'rgba(0,0,0,0.7)');
+  ovalGradient.addColorStop(1, 'rgba(0,0,0,0.9)');
 
-  ctx.stroke();
+  ctx.fillStyle = ovalGradient;
+  ctx.fill();
+  ctx.restore();
 
-  // Reset the animation loop
-  requestAnimationFrame(animate);
+  const topGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  topGradient.addColorStop(0, 'rgba(0,0,0,1)');
+  topGradient.addColorStop(0.33, 'rgba(0,0,0,1)');
+  topGradient.addColorStop(1, 'rgba(0,0,0,0)');
+
+  ctx.fillStyle = topGradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// Start the animation
-requestAnimationFrame(animate);
+function drawGrid() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  gridSize = Math.max(20, Math.min(40, canvas.width / 25));
+
+  const currentHorizon = horizon();
+  const currentPerspective = perspective();
+  const currentAspectRatio = aspectRatio();
+  const currentSpreadFactor = spreadFactor();
+  const currentNumLines = numLines();
+
+  // Draw vertical lines
+  for (let x = -currentNumLines; x <= currentNumLines; x++) {
+    const spacing = gridSize;
+
+    let startX = canvas.width / 2 + x * spacing * currentSpreadFactor;
+    let startY = canvas.height * 1.5;
+
+    let endX = canvas.width / 2 + x * (spacing / 6);
+    let endY = currentHorizon;
+
+    startX =
+      canvas.width / 2 +
+      (startX - canvas.width / 2) /
+        (1 + (canvas.height - startY) / currentPerspective);
+
+    const opacity = getVerticalLineOpacity(endX, canvas.width / 2);
+    ctx.strokeStyle = `rgba(180, 190, 220, ${opacity * 0.5})`;
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+  }
+
+  // Draw horizontal lines
+  const numHorizontalLines = Math.ceil(canvas.height / gridSize) * 1.5;
+  for (let z = 0; z < numHorizontalLines; z++) {
+    const y = currentHorizon + z * gridSize + offset;
+    if (y > canvas.height * 1.5) continue;
+
+    const perspectiveFactor = 1 + (y - currentHorizon) / currentPerspective;
+    const width = canvas.width * perspectiveFactor * currentSpreadFactor;
+
+    const opacity = getHorizontalLineOpacity(y, currentHorizon);
+    ctx.strokeStyle = `rgba(180, 190, 220, ${opacity * 0.5})`;
+    ctx.lineWidth = 1;
+
+    ctx.beginPath();
+    ctx.moveTo(canvas.width / 2 - width / 2, y);
+    ctx.lineTo(canvas.width / 2 + width / 2, y);
+    ctx.stroke();
+  }
+
+  drawVignettes();
+
+  offset = (offset + speed) % gridSize;
+
+  requestAnimationFrame(drawGrid);
+}
+
+drawGrid();
