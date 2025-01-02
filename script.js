@@ -66,7 +66,8 @@ function showContent(section) {
   if (currentContent === newContent) {
     // If clicking the same section, reset the typing animation
     const textElement = newContent.querySelector('.terminal-text');
-    const originalText = textElement.textContent.trim();
+    // Use innerText instead of textContent to preserve line breaks
+    const originalText = textElement.innerText.trim();
     textElement.style.opacity = '0';
 
     setTimeout(() => {
@@ -88,7 +89,8 @@ function showContent(section) {
 
     // Get text content and start typing animation
     const textElement = newContent.querySelector('.terminal-text');
-    const originalText = textElement.textContent.trim();
+    // Use innerText instead of textContent to preserve line breaks
+    const originalText = textElement.innerText.trim();
     typeText(textElement, originalText);
   }, 300);
 }
@@ -102,7 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialText = document.querySelector(
     '.terminal-content.active .terminal-text'
   );
-  const originalText = initialText.textContent;
+  // Use innerText instead of textContent to preserve line breaks
+  const originalText = initialText.innerText;
   typeText(initialText, originalText);
 });
 
@@ -169,7 +172,6 @@ function drawVignettes() {
     horizonY,
     canvas.width * 1.2,
     canvas.height * 0.35,
-    0,
     0,
     Math.PI * 2
   );
