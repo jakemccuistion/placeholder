@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Code</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -8,37 +10,66 @@
     <!-- Background grid canvas -->
     <canvas id="gridCanvas"></canvas>
 
+    <!-- Top navigation -->
+    <div class="top-container">
+        <div class="text-content">
+            <span>MODERN</span><span>CODE</span>
+        </div>
+        <nav class="menu">
+            <!-- Menu items will be dynamically generated -->
+        </nav>
+    </div>
+
     <!-- Main content container -->
     <div class="glass-container">
         <div class="glass-effect">
             <!-- Home section -->
             <div id="homeContent" class="terminal-content active">
-                <div class="terminal-title"><span class="cursor"></span></div>
+                <div class="terminal-title"></div>
                 <div class="terminal-text"></div>
             </div>
+
+            <!-- Software sections -->
+            <div id="twoSecondContent" class="terminal-content">
+                <div class="terminal-title"></div>
+                <div class="terminal-text"></div>
+            </div>
+
+            <div id="yeehawContent" class="terminal-content">
+                <div class="terminal-title"></div>
+                <div class="terminal-text"></div>
+            </div>
+
+            <div id="gravitonContent" class="terminal-content">
+                <div class="terminal-title"></div>
+                <div class="terminal-text"></div>
+            </div>
+
             <!-- Privacy section -->
             <div id="privacyContent" class="terminal-content">
-                <div class="terminal-title"><span class="cursor"></span></div>
+                <div class="terminal-title"></div>
                 <div class="terminal-text"></div>
             </div>
+
             <!-- Contact section -->
             <div id="contactContent" class="terminal-content">
-                <div class="terminal-title"><span class="cursor"></span></div>
+                <div class="terminal-title"></div>
                 <div class="terminal-text"></div>
             </div>
         </div>
-    </div>
 
-    <!-- Bottom navigation -->
-    <div class="bottom-container">
-        <div class="text-content">
-            <span>MODERN</span><span>CODE</span>
+        <!-- Theme switcher -->
+        <div class="theme-switcher">
+            <div class="theme-option" data-theme="green">
+                <div class="color-circle"></div>
+            </div>
+            <div class="theme-option" data-theme="amber">
+                <div class="color-circle"></div>
+            </div>
+            <div class="theme-option" data-theme="greyscale">
+                <div class="color-circle"></div>
+            </div>
         </div>
-        <nav class="menu">
-            <a onclick="showContent('home')">About Us</a>
-            <a onclick="showContent('privacy')">Privacy Policy</a>
-            <a onclick="showContent('contact')">Contact Us</a>
-        </nav>
     </div>
 
     <!-- Load JavaScript -->
