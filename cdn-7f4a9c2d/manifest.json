@@ -1,0 +1,162 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2025-07-13T18:45:58Z",
+  "themes": [
+    {
+      "id": "dracula",
+      "name": "Dracula",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/dracula.zip",
+      "size": 61219214,
+      "checksum": "ceeefd18dbabec317a1a68118e045f1fc25799b6825175bf25420d786dd06fb7",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "monokai",
+      "name": "Monokai",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/monokai.zip",
+      "size": 61265384,
+      "checksum": "cb4867d5162a9f4fca98894d2efd63f14be89ac54bca1a7b7b9ecfe1fd1ab108",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "solarized-light",
+      "name": "Solarized Light",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/solarized-light.zip",
+      "size": 60550467,
+      "checksum": "3870ee88c6285fdc3575920b0a523982a042a51398a835ddac59cb06c886beb9",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "solarized-dark",
+      "name": "Solarized Dark",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/solarized-dark.zip",
+      "size": 62258566,
+      "checksum": "868d84fe831d6eabab88581d70d265eb103c4ba67e33ed24391142d03ff99389",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "gh-light",
+      "name": "Gh Light",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/gh-light.zip",
+      "size": 61368852,
+      "checksum": "e19a46ec0354f73ef40f347f8bae7cbacda29485380ec8bb42ab6ec674be7fb0",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "gh-dark",
+      "name": "Gh Dark",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/gh-dark.zip",
+      "size": 62397592,
+      "checksum": "b2c621fb24c2a7a5e7a6b350cec43a4eb3d24d3562463f65c5138b59e1e2a54b",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "one-light",
+      "name": "One Light",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/one-light.zip",
+      "size": 61669448,
+      "checksum": "12a5972a29cd42fad6ef8c34363d44712b6eb3b6d5f4a26de37eb13efe8e13d5",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "one-dark",
+      "name": "One Dark",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/one-dark.zip",
+      "size": 60273474,
+      "checksum": "2cd21b13aeeb5a0b901d2ce23942ae4aede7f2d46b33b90b267d5fb529f3f924",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "night-owl",
+      "name": "Night Owl",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/night-owl.zip",
+      "size": 66917936,
+      "checksum": "491d5f826e251056592e3aceb6333fb63968e6761cdb6e09be15d0bb2a3e79a8",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "nord",
+      "name": "Nord",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/nord.zip",
+      "size": 58694832,
+      "checksum": "598eeccd0b7a22a75f4b42053608e86dd7526ebae7e2f713e5ad36197d9d91e8",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "github-dark",
+      "name": "Github Dark",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/github-dark.zip",
+      "size": 23731573,
+      "checksum": "321fc1d8067f9bc2e3fa8543f3f09ce5e53a2425f4d244dadf1aa79247beeedb",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "github-light",
+      "name": "Github Light",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/github-light.zip",
+      "size": 19350767,
+      "checksum": "f84bd4fcf7ef5ae09189c4b464ca90617634cc1ff535cd7a2fb071210e3777e7",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+,
+    {
+      "id": "light",
+      "name": "Light",
+      "isDefault": false,
+      "format": "zip",
+      "downloadURL": "https://moderncode.ai/cdn-7f4a9c2d/themes/light.zip",
+      "size": 60141021,
+      "checksum": "100e127929a9293f1cccfd838a46dad1b822feb48d173625b3a0d0cc699b4809",
+      "fileCount": 3518,
+      "version": "1.0"
+    }
+
+  ]
+}
